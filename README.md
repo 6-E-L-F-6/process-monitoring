@@ -1,144 +1,188 @@
-# 🖥️ Process Monitor & Logger
+# Process Monitor - Professional Malware Analysis Tool
 
-A **terminal-based process monitoring and logging tool** written in Go. This program lets you:
+**Created By E | L F**
 
-- 📊 **Monitor live processes** with CPU, memory, I/O, open files, and network connections.
-- 📝 **Log specific processes** to JSON files every second.
-- 🔍 **Browse previously saved logs** in a built-in log viewer.
+A comprehensive, professional-grade process monitoring and malware analysis tool for Linux systems.
 
-All of this is rendered beautifully in the terminal with an interactive **TUI (text user interface)** powered by [tview](https://github.com/rivo/tview).
+## Features
 
----
+### Core Monitoring
+- **Real-time Process Monitoring**: Track all running processes with CPU, memory, I/O, and network usage
+- **System Statistics**: Monitor overall system health including CPU, memory, disk, and network
+- **Process Tree**: Visualize process hierarchy and relationships
+- **Network Connections**: Track all network connections per process with protocol details
+- **File System Activity**: Monitor file operations performed by processes
+- **Memory Analysis**: Dump and analyze process memory
 
-## ✨ Features
+### Malware Analysis Features
+- **Memory Dumping**: Full or selective memory dumps of suspicious processes
+- **Network Traffic Analysis**: Track all inbound/outbound connections
+- **File Activity Tracking**: Monitor file creation, modification, and deletion
+- **Behavioral Analysis**: Detect suspicious patterns and anomalies
+- **Alert System**: Automatic alerts for suspicious activities
 
-- **Live Monitoring Mode**
-  - View all processes sorted by CPU usage.
-  - See CPU %, Memory %, I/O usage, open files, and network connections.
-  - Interactive search and selection.
+### Data Management
+- **SQLite3 Database**: All data stored in a structured SQLite database
+- **JSON Export**: Export process data, history, and analysis results to JSON
+- **Log Files**: Text-based logs for easy parsing
+- **Data Retention**: Automatic cleanup of old data (7-day retention)
 
-- **Per-Process Logging**
-  - Save process activity to `.log` files as structured JSON.
-  - Logs include CPU, memory, I/O stats, open files, and network connections.
-  - Logs update every second.
+### User Interface
+- **Professional TUI**: Terminal-based user interface with real-time updates
+- **Interactive Controls**: Keyboard shortcuts for all operations
+- **Color Coding**: Visual indicators for resource usage and alerts
+- **Search & Filter**: Find processes by name, PID, or resource usage
 
-- **Log Viewer Mode**
-  - Open a folder with `.log` files.
-  - Navigate logs interactively.
-  - Pretty-printed with syntax coloring.
+## Installation
 
----
-
-## 🚀 Installation
+### Prerequisites
+- Go 1.21 or higher
+- Linux operating system
+- SQLite3 development libraries
 
 ```bash
-# Clone the repository
-git clone https://github.com/6-E-L-F-6/process-monitoring/
-cd process-monitoring/
+# Install dependencies (Ubuntu/Debian)
+sudo apt-get install libsqlite3-dev
 
-# Build the binary
+# Clone and build
+cd procmon
+go mod download
 go build -o procmon
-
-# Run it
-./procmon
 ```
 
-> Requires **Go 1.20+** and **Linux (with /proc access)**.
+## Usage
 
----
+### Basic Usage
+```bash
+# Run in monitoring mode (default)
+sudo ./procmon
 
-## 🎮 Usage
+# Specify custom database location
+sudo ./procmon -db /var/lib/procmon/data.db
 
-When you start the app, you’ll see a menu:
-
-- **Monitoring Mode** → Start live process monitoring.
-- **Log Viewer Mode** → Open saved logs.
-- **Quit** → Exit the application.
-
-### Monitoring Mode
-
-- `Ctrl+C` → Quit
-- `Enter` → Lock details on a process
-- `Esc` → Unlock process
-- `Ctrl+P` → Start logging selected process
-- `Ctrl+K` → Stop logging
-
-### Log Viewer Mode
-
-- `← / →` → Navigate between log entries
-- `↑ / ↓` → Switch between log files
-- `Esc` → Exit viewer
-
----
-
-## 📷 Screenshots
-
-### 🔹 Monitoring Mode
-![Monitoring Screenshot](screen/screenshot-monitoring.png)
-
-### 🔹 Log Viewer Mode
-![Log Viewer Screenshot](screen/screenshot-logs.png)
-
----
-
-## 📂 Log Format
-
-Logs are stored in **JSON Lines** (`.log`) format. Example entry:
-
-```json
-{
-  "time": "2025-09-12 14:23:01",
-  "pid": 1234,
-  "name": "nginx",
-  "cmd": "/usr/sbin/nginx -g daemon off;",
-  "cpu": 1.23,
-  "mem": 0.45,
-  "io_read": 10240,
-  "io_write": 2048,
-  "open_files": ["/etc/nginx/nginx.conf", "/var/log/nginx/access.log"],
-  "net_conns": [
-    {
-      "proto": "tcp",
-      "localip": "127.0.0.1",
-      "localport": "8080",
-      "remip": "192.168.1.50",
-      "remport": "52345",
-      "state": "ESTABLISHED",
-      "inode": "123456"
-    }
-  ]
-}
+# Adjust monitoring interval
+sudo ./procmon -interval 2s
 ```
 
----
+### Export Mode
+```bash
+# Export specific process to JSON
+./procmon -mode export -pid 1234 -output process_1234.json
 
-## 🛠️ Tech Stack
+# Export all processes
+./procmon -mode export -output all_processes.json
+```
 
-- [Go](https://go.dev/) – Core language
-- [tview](https://github.com/rivo/tview) – TUI components
-- [gopsutil](https://github.com/shirou/gopsutil) – Process/system info
+### Command Line Options
+```
+-db string
+    Database file path (default "./data/procmon.db")
+-dump string
+    Memory dump directory (default "./dumps")
+-interval duration
+    Monitoring interval (default 1s)
+-log string
+    Log directory (default "./logs")
+-mode string
+    Mode: monitor, export, or viewer (default "monitor")
+-output string
+    Export output path
+-pid int
+    PID to export (for export mode)
+-version
+    Show version
+```
 
----
+## Keyboard Shortcuts
 
-## 🤝 Contributing
+### Navigation
+- `↑/↓` - Navigate process list
+- `Enter` - Lock detail view to selected process
+- `Esc` - Unlock detail view
+- `Tab` - Switch focus
 
-Pull requests are welcome! If you’d like to add features or fix bugs:
+### Actions
+- `r` or `Ctrl+R` - Refresh process list
+- `d` or `Ctrl+D` - Dump process memory
+- `e` or `Ctrl+E` - Export process data to JSON
+- `l` or `Ctrl+L` - Toggle process logging
+- `a` or `Ctrl+A` - Show alerts
+- `k` - Kill selected process
 
-1. Fork the project.
-2. Create a feature branch (`git checkout -b feature-xyz`).
-3. Commit changes (`git commit -m 'Add xyz'`).
-4. Push to the branch (`git push origin feature-xyz`).
-5. Open a Pull Request.
+### System
+- `h` or `?` or `Ctrl+H` - Show help
+- `q` or `Ctrl+C` or `Ctrl+Q` - Quit
 
----
+## Database Schema
 
-## 💖 Support & Contact
+### Tables
+- **processes** - Process information snapshots
+- **network_connections** - Network connection tracking
+- **file_events** - File system operations
+- **memory_dumps** - Memory dump metadata
+- **process_events** - Process lifecycle events
+- **system_stats** - System-wide statistics
+- **open_files** - Open file descriptors
+- **modules** - Loaded libraries/modules
+- **alerts** - Security alerts
 
-If you find this project useful and want to support further development:
 
-- 💬 Contact me on Telegram: [@E6L6F6](https://t.me/E6L6F6)
+## Project Structure
+```
+procmon/
+├── database/       # Database layer
+│   └── database.go
+├── exporter/       # JSON export functionality
+│   └── exporter.go
+├── logger/         # Logging system
+│   └── logger.go
+├── models/         # Data models
+│   └── models.go
+├── monitor/        # Monitoring components
+│   ├── process.go  # Process monitoring
+│   ├── file.go     # File system monitoring
+│   └── memory.go   # Memory operations
+├── ui/             # User interface
+│   └── ui.go
+├── utils/          # Utility functions
+│   └── helpers.go
+├── main.go         # Entry point
+├── go.mod          # Go module
+└── README.md       # This file
+```
 
-## 📜 License
+## Security Considerations
 
-MIT License © 2025 [ELF]
+- **Root Privileges**: Some features require root access (memory dumps, all processes)
+- **Memory Dumps**: Can contain sensitive data - store securely
+- **Database**: Contains system information - protect appropriately
+- **Alerts**: Configure thresholds to avoid alert fatigue
 
+## Troubleshooting
+
+### Permission Denied
+Run with sudo for full functionality:
+```bash
+sudo ./procmon
+```
+
+### Database Locked
+If the database is locked, check for other instances:
+```bash
+lsof data/procmon.db
+```
+
+### High CPU Usage
+Increase the monitoring interval:
+```bash
+sudo ./procmon -interval 5s
+```
+
+## License
+
+Created By E | L F
+
+## Version History
+
+- v2.0.0 - Complete rewrite with SQLite3, modular architecture, professional UI
+- v1.0.0 - Initial version
