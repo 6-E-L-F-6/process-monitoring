@@ -1,0 +1,65 @@
+{
+  "database": {
+    "path": "./data/procmon.db",
+    "max_size_mb": 1024,
+    "retention_days": 7,
+    "backup_enabled": true,
+    "backup_interval": "24h"
+  },
+  "monitoring": {
+    "process_interval": "1s",
+    "system_interval": "5s",
+    "file_interval": "2s",
+    "analysis_interval": "10s",
+    "track_all_processes": true,
+    "track_network": true,
+    "track_files": true,
+    "track_memory": true
+  },
+  "logging": {
+    "directory": "./logs",
+    "level": "info",
+    "max_size_mb": 100,
+    "max_backups": 5,
+    "max_age_days": 30,
+    "compress": true,
+    "console_output": true
+  },
+  "alerts": {
+    "enabled": true,
+    "min_severity": "low",
+    "cpu_threshold": 80.0,
+    "memory_threshold": 50.0,
+    "io_threshold": 104857600,
+    "network_threshold": 50,
+    "suspicious_names": [
+      "miner",
+      "mining",
+      "xmr",
+      "monero",
+      "backdoor",
+      "rootkit",
+      "keylogger",
+      "trojan",
+      "malware",
+      "virus"
+    ],
+    "whitelist": []
+  },
+  "security": {
+    "enable_yara": false,
+    "yara_rules_path": "./rules",
+    "enable_heuristics": true,
+    "heuristic_threshold": 0.7,
+    "auto_kill_suspicious": false,
+    "memory_dump_on_alert": true
+  },
+  "ui": {
+    "refresh_rate": "1s",
+    "show_all_processes": true,
+    "default_sort_by": "cpu",
+    "color_scheme": "default",
+    "show_toolbar": true,
+    "show_status_bar": true
+  }
+}
